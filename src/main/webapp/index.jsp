@@ -8,6 +8,6 @@
 </head>
 <body>
 <h2>By using Expression Langauge</h2>
-${25+25}
+${25+25+30}
 </body>
 </html>
