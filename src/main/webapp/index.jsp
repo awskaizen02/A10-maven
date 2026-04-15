@@ -7,7 +7,7 @@
 <title>Insert title here</title>
 </head>
 <body>
-<h2>By using Expression Langauge</h2>
-${25+25+30}
+<h2>By using Expression Langauge adding the numbers</h2>
+${25+25+30+100+20}
 </body>
 </html>
