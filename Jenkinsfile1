@@ -1,0 +1,44 @@
+pipeline {
+    agent {label 'agent01'}
+ parameters { choice(name: 'BRANCH', choices: ['jar', 'war', 'main'], description: 'Pick something') }   
+
+triggers { pollSCM('H/05 * * * *') }
+
+    stages {
+        stage('Git Checkout') {
+            steps {
+                git branch: "$BRANCH", url: 'https://github.com/awskaizen02/A10-maven.git'
+            }
+        }
+        stage('validate the code') {
+            steps {
+                sh 'mvn validate'
+            }
+        }
+                stage('compile the code') {
+            steps {
+                sh 'mvn compile'
+            }
+        }
+                stage('test the code') {
+            steps {
+                sh 'mvn test'
+            }
+        }
+                stage('package the code') {
+            steps {
+                sh 'mvn package'
+            }
+        }
+                stage('build the code') {
+            steps {
+                sh 'mvn install'
+            }
+        }
+       stage('Deploy to webserver') {
+            steps {
+                deploy adapters: [tomcat9(alternativeDeploymentContext: '', credentialsId: 'webserve01', path: '', url: 'http://172.31.16.184:9090')], contextPath: 'pipeline', war: '**/*.war'
+            }
+        }
+    }
+}
