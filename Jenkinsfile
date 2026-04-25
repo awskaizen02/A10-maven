@@ -1,5 +1,5 @@
 pipeline {
-    agent {label 'agent01'}
+    agent any
 parameters {choice(name: 'BRANCH', choices: ['jar', 'war', 'master'], description: 'Pick something')}    
 triggers{ cron('H/05 * * * *') }
     stages {
