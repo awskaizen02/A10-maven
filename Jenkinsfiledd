@@ -1,0 +1,17 @@
+pipeline {
+    agent any
+
+    stages {
+        stage('git-checkout') {
+            steps {
+                git branch: 'jar', url: 'https://github.com/awskaizen02/A10-maven.git'
+            }
+        }
+        stage('Build'){
+            steps{
+                sh 'mvn clean'
+                sh 'mvn install'
+            }
+        }
+    }
+}
