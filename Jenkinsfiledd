@@ -1,0 +1,38 @@
+pipeline {
+    agent any
+
+    stages {
+        stage('git-checkout') {
+            steps {
+                git branch: 'war', url: 'https://github.com/awskaizen02/A10-maven.git'
+            }
+        }
+        stage('Build'){
+            steps{
+                sh 'mvn clean'
+                sh 'mvn install'
+            }
+        }
+        stage('Build Docker Image'){
+            steps{
+            script{
+                app=docker.build("dockerpandian/apr27")
+                app.inside{
+                    sh 'echo $(curl localhost:8080)'
+                }
+            }
+            
+            }
+        }
+       stage('Push Docker Image'){
+            steps{
+                script{
+                  withDockerRegistry(credentialsId: 'deployment', url: 'https://index.docker.io/v1/') {
+                      app.push("${env.BUILD_NUMBER}")
+                      app.push("latest")
+                }
+            }
+            }
+        }
+    }
+}
