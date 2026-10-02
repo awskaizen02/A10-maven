@@ -1,0 +1,24 @@
+pipeline {
+    agent any
+  parameters { choice(name: 'BRANCH', choices: ['jar', 'war', 'main'], description: 'Pick the branch to build')}
+  triggers { pollSCM('H/5 * * * *') }
+
+    stages {
+        stage('git') {
+            steps {
+                git branch: "$BRANCH", url: 'https://github.com/awskaizen02/A10-maven.git'
+            }
+        }
+       stage('build') {
+            steps {
+                sh 'mvn clean'
+                sh 'mvn install'
+            }
+        }  
+         stage('deploy') {
+            steps {
+                deploy adapters: [tomcat9(alternativeDeploymentContext: '', credentialsId: 'ws', path: '', url: 'http://localhost:8888')], contextPath: 'first_pipline', war: '**/*.war'
+            }
+        }
+    }
+}
